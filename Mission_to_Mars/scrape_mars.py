@@ -4,6 +4,7 @@ import pandas as pd
 import datetime as dt
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 executable_path = {'executable_path': ChromeDriverManager().install()}
 browser = Browser('chrome', **executable_path, headless=False)
 
@@ -43,11 +44,20 @@ def featured_image(browser):
 
 # Mars Facts
 
-more_info_url = 'https://galaxyfacts-mars.com'
-browser.visit(more_info_url)
-table = pd.read_html(more_info_url)
-df = table[0]
-df.head()
+# more_info_url = 'https://galaxyfacts-mars.com'
+# browser.visit(more_info_url)
+# table = pd.read_html(more_info_url)
+# df = table[0]
+# df.head()
+
+def mars_facts():
+    try:
+        df= pd.read_html("https://galaxyfacts-mars.com")[0]
+    except BaseException:
+        return None 
+    df.columns = ['Description', 'Mars', 'Earth']
+    df.set_index('Description', inplace= True)
+    return df.to_html(classes= "table table-striped")
 
 # Mars Hemispheres
 
@@ -99,8 +109,8 @@ def scrape_hemisphere(html_text):
 
 # Main Web Scraping Bot
 def scrape_all():
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
+   # executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', executable_path = 'chromedriver', headless=True)
     news_title, news_p = mars_news(browser)
     img_url = featured_image(browser)
     facts = table
